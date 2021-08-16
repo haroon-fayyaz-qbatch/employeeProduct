@@ -1,6 +1,4 @@
-require('dotenv').config();
 const config = require('./config/config.json')
-const process = require('process');
 const { Sequelize } = require('sequelize');
 
 
