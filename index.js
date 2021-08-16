@@ -1,0 +1,1 @@
+const empDbController = require('./controllers/empController');
