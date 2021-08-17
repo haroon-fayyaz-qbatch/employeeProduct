@@ -20,24 +20,6 @@ if (config.use_env_variable) {
   );
 }
 
-function sleep(ms) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, ms);
-  });
-}
-
-const checkConnection = async () => {
-  try {
-    await sequelize.authenticate().then(() => {
-      console.log("Connection has been established successfully.");
-    });
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-  }
-};
-
-// checkConnection();n
-
 fs.readdirSync(__dirname)
   .filter((file) => {
     return (

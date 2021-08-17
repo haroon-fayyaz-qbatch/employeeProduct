@@ -77,10 +77,65 @@ const minAndMaxSalary = async () => {
   }
 };
 
+const totalSalaryForClerkAndAnalyst = async () => {
+  const result = await db["Emp"].findAll({
+    attributes: [
+      "Job",
+      [db.Sequelize.fn("sum", db.Sequelize.col("Sal")), "total_sal"],
+    ],
+    where: {
+      Job: {
+        [db.Sequelize.Op.in]: ["CLERK", "ANALYST"],
+      },
+    },
+    group: ["Job"],
+  });
+
+  for (const i in result) {
+    console.log(
+      "Job: ",
+      result[i].dataValues.Job,
+      ", Total Salary: ",
+      result[i].dataValues.total_sal
+    );
+  }
+};
+
+const employeesHiredInSpecificYear = async (year = 1981) => {
+  const result = await db["Emp"].findAll({
+    attributes: ["ename"],
+    where: db.Sequelize.where(
+      db.Sequelize.fn("YEAR", db.Sequelize.col("hire_date")),
+      year
+    ),
+  });
+  for (const i in result) {
+    console.log("Employee Name: ", result[i].dataValues.ename);
+  }
+};
+
+const employeesNotHiredInSpecificYear = async (year = 1981) => {
+  const result = await db["Emp"].findAll({
+    attributes: ["ename"],
+    where: db.Sequelize.where(
+      db.Sequelize.fn("YEAR", db.Sequelize.col("hire_date")),
+      {
+        [db.Sequelize.Op.not]: year,
+      }
+    ),
+  });
+  for (const i in result) {
+    console.log("Employee Name: ", result[i].dataValues.ename);
+  }
+};
+
 const test = async () => {
   await noOfEmployeesInEachDepartment();
   await avgSalaryForEachJob();
   await minAndMaxSalary();
+  await totalSalaryForClerkAndAnalyst();
+  await employeesHiredInSpecificYear();
+  await employeesNotHiredInSpecificYear();
 };
 
 test();
