@@ -144,6 +144,19 @@ const employeesHiredAfterSpecificYear = async (year = 1981) => {
   }
 };
 
+const employeesHiredinSpecificMonth = async (month = "December") => {
+  const result = await db["Emp"].findAll({
+    attributes: ["ename"],
+    where: db.Sequelize.where(
+      db.Sequelize.fn("date_format", db.Sequelize.col("hire_date"), "%M"),
+      month
+    ),
+  });
+  for (const i in result) {
+    console.log(result[i].dataValues.ename);
+  }
+};
+
 const test = async () => {
   //   await noOfEmployeesInEachDepartment();
   //   await avgSalaryForEachJob();
@@ -151,7 +164,8 @@ const test = async () => {
   //   await totalSalaryForClerkAndAnalyst();
   //   await employeesHiredInSpecificYear();
   //   await employeesNotHiredInSpecificYear();
-  await employeesHiredAfterSpecificYear();
+  //   await employeesHiredAfterSpecificYear();
+  await employeesHiredinSpecificMonth();
 };
 
 test();
