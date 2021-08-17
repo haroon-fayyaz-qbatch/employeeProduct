@@ -62,6 +62,11 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       freezeTableName: true,
       modelName: "Emp",
+      defaultScope: {
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+      },
     }
   );
   return Emp;
