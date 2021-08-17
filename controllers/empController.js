@@ -157,6 +157,59 @@ const employeesHiredinSpecificMonth = async (month = "December") => {
   }
 };
 
+const employeesHiredBeforeSpecificMonthAndYear = async (
+  year = 1981,
+  months = 4
+) => {
+  const result = await db["Emp"].findAll({
+    attributes: ["ename", "hire_date"],
+    where: [
+      db.Sequelize.where(
+        db.Sequelize.fn("Year", db.Sequelize.col("hire_date")),
+        year
+      ),
+      db.Sequelize.where(
+        db.Sequelize.fn("Month", db.Sequelize.col("hire_date")),
+        {
+          [db.Sequelize.Op.lte]: months,
+        }
+      ),
+    ],
+  });
+  for (const i in result) {
+    console.log(
+      "EName: ",
+      result[i].dataValues.ename,
+      ", Hire_Date: ",
+      result[i].dataValues.hire_date
+    );
+  }
+};
+
+const daysLeftTillNow = async () => {
+  const result = await db["Emp"].findAll({
+    attributes: [
+      "hire_date",
+      [
+        db.Sequelize.fn(
+          "datediff",
+          db.Sequelize.fn("NOW"),
+          db.Sequelize.col("hire_date")
+        ),
+        "days",
+      ],
+    ],
+  });
+  for (const i in result) {
+    console.log(
+      "Hire Date: ",
+      result[i].dataValues.hire_date,
+      ", Days: ",
+      result[i].dataValues.days
+    );
+  }
+};
+
 const test = async () => {
   //   await noOfEmployeesInEachDepartment();
   //   await avgSalaryForEachJob();
@@ -165,7 +218,9 @@ const test = async () => {
   //   await employeesHiredInSpecificYear();
   //   await employeesNotHiredInSpecificYear();
   //   await employeesHiredAfterSpecificYear();
-  await employeesHiredinSpecificMonth();
+  //   await employeesHiredinSpecificMonth();
+  //   await employeesHiredBeforeSpecificMonthAndYear();
+  await daysLeftTillNow();
 };
 
 test();
