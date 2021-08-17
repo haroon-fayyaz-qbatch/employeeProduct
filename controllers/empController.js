@@ -210,6 +210,45 @@ const daysLeftTillNow = async () => {
   }
 };
 
+const employeesHiredOnSpecificDateOfMonth = async (date) => {
+  const result = await db["Emp"].findAll({
+    attributes: [
+      [db.Sequelize.fn("count", db.Sequelize.col("emp_no")), "count"],
+    ],
+    where: db.Sequelize.where(
+      db.Sequelize.fn("DAY", db.Sequelize.col("hire_date")),
+      date
+    ),
+  });
+  for (const i in result) {
+    console.log("Count: ", result[i].dataValues.count);
+  }
+};
+
+const addYearsInHireDate = async (years) => {
+  const result = await db["Emp"].findAll({
+    attributes: [
+      "ename",
+      [
+        db.Sequelize.fn(
+          "DATE_ADD",
+          db.Sequelize.col("hire_date"),
+          db.Sequelize.literal(`INTERVAL ${years} YEAR`)
+        ),
+        "New_Date",
+      ],
+    ],
+  });
+  for (const i in result) {
+    console.log(
+      "EName: ",
+      result[i].dataValues.ename,
+      "Date: ",
+      result[i].dataValues.New_Date
+    );
+  }
+};
+
 const test = async () => {
   //   await noOfEmployeesInEachDepartment();
   //   await avgSalaryForEachJob();
@@ -220,7 +259,9 @@ const test = async () => {
   //   await employeesHiredAfterSpecificYear();
   //   await employeesHiredinSpecificMonth();
   //   await employeesHiredBeforeSpecificMonthAndYear();
-  await daysLeftTillNow();
+  //   await daysLeftTillNow();
+  //   await employeesHiredOnSpecificDateOfMonth(9);
+  await addYearsInHireDate(5);
 };
 
 test();
