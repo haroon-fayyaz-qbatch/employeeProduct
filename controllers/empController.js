@@ -129,13 +129,29 @@ const employeesNotHiredInSpecificYear = async (year = 1981) => {
   }
 };
 
+const employeesHiredAfterSpecificYear = async (year = 1981) => {
+  const result = await db["Emp"].findAll({
+    attributes: ["ename"],
+    where: db.Sequelize.where(
+      db.Sequelize.fn("Year", db.Sequelize.col("hire_date")),
+      {
+        [db.Sequelize.Op.gt]: year,
+      }
+    ),
+  });
+  for (const i in result) {
+    console.log("Employee Name: ", result[i].dataValues.ename);
+  }
+};
+
 const test = async () => {
-  await noOfEmployeesInEachDepartment();
-  await avgSalaryForEachJob();
-  await minAndMaxSalary();
-  await totalSalaryForClerkAndAnalyst();
-  await employeesHiredInSpecificYear();
-  await employeesNotHiredInSpecificYear();
+  //   await noOfEmployeesInEachDepartment();
+  //   await avgSalaryForEachJob();
+  //   await minAndMaxSalary();
+  //   await totalSalaryForClerkAndAnalyst();
+  //   await employeesHiredInSpecificYear();
+  //   await employeesNotHiredInSpecificYear();
+  await employeesHiredAfterSpecificYear();
 };
 
 test();
